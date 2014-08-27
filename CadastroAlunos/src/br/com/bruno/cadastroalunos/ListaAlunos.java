@@ -3,21 +3,21 @@ package br.com.bruno.cadastroalunos;
 import java.util.List;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+import br.com.bruno.cadastroalunos.adapter.ListaAlunosAdapter;
 import br.com.bruno.cadastroalunos.dao.AlunoDAO;
 import br.com.bruno.cadastroalunos.modelo.Aluno;
 
@@ -41,7 +41,12 @@ public class ListaAlunos extends ActionBarActivity {
 			public void onItemClick(AdapterView<?> adapter, View view,
 					int position, long id) {
 
-				Toast.makeText(ListaAlunos.this, "Clique na posicao " + position, Toast.LENGTH_SHORT).show();
+				Aluno alunoClicado = (Aluno) adapter.getItemAtPosition(position);
+				
+				Intent irParaFormulario = new Intent(ListaAlunos.this, Formulario.class);
+				irParaFormulario.putExtra("alunoSelecionado", alunoClicado);
+				
+				startActivity(irParaFormulario);
 			}
 		
 		});
@@ -63,9 +68,34 @@ public class ListaAlunos extends ActionBarActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 
-		menu.add("Ligar");
+		MenuItem ligar = menu.add("Ligar");
+		ligar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent irParaTelaDiscagem = new Intent(Intent.ACTION_CALL);
+				Uri discarPara = Uri.parse("tel:"+aluno.getTelefone());
+				irParaTelaDiscagem.setData(discarPara);
+				
+				startActivity(irParaTelaDiscagem);
+				return false;
+			}
+		});
 		menu.add("Enviar SMS");
-		menu.add("Navegar no site");
+		MenuItem site = menu.add("Navegar no site");
+		site.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent irParaOSite = new Intent(Intent.ACTION_VIEW);
+				Uri localSite = Uri.parse("http://"+aluno.getSite());
+				irParaOSite.setData(localSite);
+				
+				startActivity(irParaOSite);
+				return false;
+			}
+		});
+		
 		MenuItem deletar = menu.add("Deletar");
 		deletar.setOnMenuItemClickListener(new OnMenuItemClickListener() {
 			
@@ -80,8 +110,6 @@ public class ListaAlunos extends ActionBarActivity {
 		});
 		menu.add("Ver no mapa");
 		menu.add("Enviar e-mail");
-		
-		
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
 	}
@@ -124,9 +152,8 @@ public class ListaAlunos extends ActionBarActivity {
 		List<Aluno> alunos = dao.getLista();
 		dao.close();
 		
-		int layout = android.R.layout.simple_list_item_1;
+		ListaAlunosAdapter adapter = new ListaAlunosAdapter(alunos, this);
 		
-		ArrayAdapter<Aluno> adapter = new ArrayAdapter<Aluno>(this, layout , alunos);
 		lista.setAdapter(adapter);
 	}
 }
