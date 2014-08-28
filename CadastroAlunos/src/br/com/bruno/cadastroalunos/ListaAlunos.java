@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -17,9 +18,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 import br.com.bruno.cadastroalunos.adapter.ListaAlunosAdapter;
 import br.com.bruno.cadastroalunos.dao.AlunoDAO;
 import br.com.bruno.cadastroalunos.modelo.Aluno;
+import br.com.bruno.cadastroalunos.task.EnviaAlunosTask;
+import br.com.bruno.cadastroalunos.util.AlunoConverter;
+import br.com.bruno.cadastroalunos.util.WebClient;
 
 public class ListaAlunos extends ActionBarActivity {
 
@@ -130,6 +135,12 @@ public class ListaAlunos extends ActionBarActivity {
 		case R.id.novo:
 			Intent intent = new Intent(this, Formulario.class);
 			startActivity(intent);
+			break;
+			
+		case R.id.enviar_alunos:
+			EnviaAlunosTask task = new EnviaAlunosTask(this);
+			task.execute();
+			
 			break;
 
 		default:

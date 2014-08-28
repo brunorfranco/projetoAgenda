@@ -63,6 +63,16 @@ public class ListaAlunosAdapter extends BaseAdapter{
 			foto.setImageDrawable(semFoto );
 		}
 		
+		//tratamento para o celular deitado, na posicao `land`
+//		TextView telefone = (TextView) convertView.findViewById(R.id.telefone);
+//		if(telefone != null){
+//			telefone.setText(aluno.getTelefone());
+//		}
+//
+//		TextView site = (TextView) convertView.findViewById(R.id.site);
+//		if(site != null){
+//			site.setText(aluno.getSite());
+//		}
 		
 		return linha;
 	}

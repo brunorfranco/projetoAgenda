@@ -99,4 +99,14 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
 	}
 
+	public boolean isAluno(String telefone) {
+		String[] args = {telefone};
+		
+		Cursor cursor = getWritableDatabase().rawQuery("SELECT id from Alunos where telefone = ?", args);
+		
+		boolean existeAluno = cursor.moveToFirst();
+		
+		return existeAluno;
+	}
+
 }
